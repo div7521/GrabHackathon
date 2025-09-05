@@ -2,6 +2,9 @@ import os
 from dotenv import load_dotenv
 import streamlit as st
 import google.generativeai as genai
+from prompt import system_prompt
+import json
+from tools import AVAILABLE_TOOLS, TOOL_SCHEMAS
 
 #loads environment variables from .env file to applications environment
 load_dotenv()
@@ -16,11 +19,27 @@ def setup_gemini():
     
     genai.configure(api_key=api_key)
 
-    model=genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel(
+        'gemini-1.5-flash',
+        tools=TOOL_SCHEMAS,
+        system_instruction=system_prompt
+    )
     return model
 
-def get_ai_response(model, user_input):
-    """Get response from Gemini for given input"""
+def execute_tool_call(tool_name, arguments):
+    """Execute a tool call with given arguments"""
+    if tool_name not in AVAILABLE_TOOLS:
+        return f"Error: Tool '{tool_name}' not found"
+    
+    try:
+        tool_function = AVAILABLE_TOOLS[tool_name]
+        result = tool_function(**arguments)
+        return result
+    except Exception as e:
+        return f"Error executing {tool_name}: {str(e)}"
+
+def get_ai_response_with_tools(model, user_input):
+    """Get response from Gemini with tool calling support"""
     try:
         response = model.generate_content(user_input)
         return response.text
@@ -30,23 +49,56 @@ def get_ai_response(model, user_input):
 
 def main():
     """Main function to run the AI agent with Streamlit"""
-    st.title("AI Agent")
+
+    st.set_page_config(
+        page_title="Project Synapse", 
+        layout="wide"
+    )
+    st.title("Synapse")
+    st.subtitle("Agentic Last-Mile Coordinator")
+
+    st.markdown("""
+    **Project Synapse** is an intelligent AI agent that autonomously resolves complex delivery disruptions. 
+    Describe a delivery scenario with problems, and watch the agent reason through solutions using available tools.
+    """)
     
     # Initialize model in session state
     if 'model' not in st.session_state:
-        st.session_state.model = setup_gemini()
-    
-    # Text input
-    user_input = st.text_input("Ask me anything:")
+        with st.spinner("Initializing Project Synapse with tools..."):
+            try:
+                st.session_state.model = setup_gemini()
+                st.success("✅ Project Synapse initialized successfully!")
+            except Exception as e:
+                st.error(f"❌ Setup failed: {e}")
+                st.stop()
+
+    st.markdown("### Describe Your Delivery Scenario")
+    user_input = st.text_area(
+        "Enter a complex delivery disruption scenario:",
+        placeholder="Example: Restaurant restaurant_002 is overloaded with 40-minute prep time. Customer CUST_123 has an urgent order and is getting impatient. The driver DRIVER_456 is waiting idle. What should we do?",
+        height=100
+    )
+
     
     # Submit button
-    if st.button("Get Answer"):
-        if user_input:
-            with st.spinner("Thinking..."):
-                response = get_ai_response(st.session_state.model, user_input)
-            st.write(response)
+    # Submit button
+    if st.button("Analyze & Resolve", type="primary"):
+        if user_input.strip():
+            st.markdown("---")
+            st.markdown("### Project Synapse Analysis")
+            
+            with st.spinner("Agent is analyzing the scenario and planning actions..."):
+                response = get_ai_response_with_tools(st.session_state.model, user_input)
+            
+            # Display the response
+            st.markdown(response)
+            
         else:
-            st.warning("Please enter a question!")
+            st.warning("⚠️ Please describe a delivery scenario!")
+    
+    # Add footer
+    st.markdown("---")
+    st.markdown("**Project Synapse** - Autonomous Last-Mile Delivery Coordination")
 
 if __name__ == "__main__":
     main()
