@@ -48,7 +48,7 @@ from .mediation_tools import (
 )
 
 # Logistics Tools
-from .logistics_tools import (
+from .logistic_tools import (
     suggest_safe_drop_off,
     find_nearby_locker,
     log_merchant_packaging_feedback,

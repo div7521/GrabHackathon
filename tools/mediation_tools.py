@@ -42,28 +42,28 @@ Next Step: Proceed to evidence collection phase
 schema_initiate_mediation_flow = types.FunctionDeclaration(
     name="initiate_mediation_flow",
     description="Initiates a real-time mediation session between driver and customer for at-the-door disputes. Creates synchronized interface on both devices to resolve conflicts immediately.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "order_id": types.Schema(
-                type=types.Type.STRING,
-                description="The order ID where the dispute occurred",
-            ),
-            "driver_id": types.Schema(
-                type=types.Type.STRING,
-                description="The driver involved in the dispute",
-            ),
-            "customer_id": types.Schema(
-                type=types.Type.STRING,
-                description="The customer involved in the dispute",
-            ),
-            "dispute_type": types.Schema(
-                type=types.Type.STRING,
-                description="Type of dispute (e.g., 'damaged_packaging', 'missing_items', 'delivery_condition')",
-            ),
+    parameters={
+        "type": "object",
+        "properties": {
+            "order_id": {
+                "type": "string",
+                "description": "The order ID where the dispute occurred",
+            },
+            "driver_id": {
+                "type": "string",
+                "description": "The driver involved in the dispute",
+            },
+            "customer_id": {
+                "type": "string",
+                "description": "The customer involved in the dispute",
+            },
+            "dispute_type": {
+                "type": "string",
+                "description": "Type of dispute (e.g., 'damaged_packaging', 'missing_items', 'delivery_condition')",
+            },
         },
-        required=["order_id", "driver_id", "customer_id", "dispute_type"],
-    ),
+        "required": ["order_id", "driver_id", "customer_id", "dispute_type"],
+    },
 )
 
 def collect_evidence(session_id, evidence_type, party_type):
@@ -133,24 +133,24 @@ Next Step: Ready for automated analysis
 schema_collect_evidence = types.FunctionDeclaration(
     name="collect_evidence",
     description="Guides both driver and customer through structured evidence collection using photos, questionnaires, and documentation. Essential for fair dispute resolution.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "session_id": types.Schema(
-                type=types.Type.STRING,
-                description="The mediation session ID where evidence is being collected",
-            ),
-            "evidence_type": types.Schema(
-                type=types.Type.STRING,
-                description="Type of evidence being collected (e.g., 'damaged_packaging', 'missing_items', 'delivery_condition')",
-            ),
-            "party_type": types.Schema(
-                type=types.Type.STRING,
-                description="Which party is providing evidence ('driver' or 'customer')",
-            ),
+    parameters={
+        "type": "object",
+        "properties": {
+            "session_id": {
+                "type": "string",
+                "description": "The mediation session ID where evidence is being collected",
+            },
+            "evidence_type": {
+                "type": "string",
+                "description": "Type of evidence being collected (e.g., 'damaged_packaging', 'missing_items', 'delivery_condition')",
+            },
+            "party_type": {
+                "type": "string",
+                "description": "Which party is providing evidence ('driver' or 'customer')",
+            },
         },
-        required=["session_id", "evidence_type", "party_type"],
-    ),
+        "required": ["session_id", "evidence_type", "party_type"],
+    },
 )
 
 def analyze_evidence(session_id, collected_evidence_summary):
@@ -216,18 +216,18 @@ Status: ✅ Ready for automated resolution execution
 schema_analyze_evidence = types.FunctionDeclaration(
     name="analyze_evidence",
     description="AI-powered analysis of collected dispute evidence to determine fault and recommend fair resolutions. Uses machine learning to ensure objective decision-making.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "session_id": types.Schema(
-                type=types.Type.STRING,
-                description="The mediation session ID being analyzed",
-            ),
-            "collected_evidence_summary": types.Schema(
-                type=types.Type.STRING,
-                description="Summary of all evidence collected from both parties",
-            ),
+    parameters={
+        "type": "object",
+        "properties": {
+            "session_id": {
+                "type": "string",
+                "description": "The mediation session ID being analyzed",
+            },
+            "collected_evidence_summary": {
+                "type": "string",
+                "description": "Summary of all evidence collected from both parties",
+            },
         },
-        required=["session_id", "collected_evidence_summary"],
-    ),
+        "required": ["session_id", "collected_evidence_summary"],
+    },
 )

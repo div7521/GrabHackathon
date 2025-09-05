@@ -55,7 +55,7 @@ def main():
         layout="wide"
     )
     st.title("Synapse")
-    st.subtitle("Agentic Last-Mile Coordinator")
+    st.markdown("### Agentic Last-Mile Coordinator")
 
     st.markdown("""
     **Project Synapse** is an intelligent AI agent that autonomously resolves complex delivery disruptions. 

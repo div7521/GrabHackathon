@@ -91,22 +91,22 @@ Flight Status Report:
 schema_check_flight_status = types.FunctionDeclaration(
     name="check_flight_status",
     description="Checks real-time flight status to coordinate urgent deliveries to passengers heading to airport. Provides departure times, delays, and urgency assessment.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "flight_number": types.Schema(
-                type=types.Type.STRING,
-                description="The flight number to check (e.g., 'AA123', 'SQ456')",
-            ),
-            "airline": types.Schema(
-                type=types.Type.STRING,
-                description="The airline name (optional, for verification)",
-            ),
-            "departure_airport": types.Schema(
-                type=types.Type.STRING,
-                description="The departure airport code or name (optional)",
-            ),
+    parameters={
+        "type": "object",
+        "properties": {
+            "flight_number": {
+                "type": "string",
+                "description": "The flight number to check (e.g., 'AA123', 'SQ456')",
+            },
+            "airline": {
+                "type": "string",
+                "description": "The airline name (optional, for verification)",
+            },
+            "departure_airport": {
+                "type": "string",
+                "description": "The departure airport code or name (optional)",
+            },
         },
-        required=["flight_number"],
-    ),
+        "required": ["flight_number"],
+    },
 )
