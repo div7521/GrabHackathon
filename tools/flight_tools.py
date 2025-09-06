@@ -62,7 +62,7 @@ Flight Status Report:
 - Boarding Status: {scenario['boarding_status']}
 - Estimated Boarding: {scenario['estimated_boarding']}
 
-🚨 PASSENGER URGENCY ASSESSMENT:
+PASSENGER URGENCY ASSESSMENT:
 """
 
     if scenario['status'] == "On Time":
@@ -80,7 +80,7 @@ Flight Status Report:
 
     flight_info += f"""
 
-📍 DELIVERY COORDINATION:
+DELIVERY COORDINATION:
 - Airport Arrival Recommended: {(actual_departure - timedelta(minutes=90)).strftime('%I:%M %p')}
 - Traffic Buffer Time: 30 minutes recommended
 - Drop-off Location: Departure terminal curbside

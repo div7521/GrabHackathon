@@ -32,13 +32,13 @@ Traffic Status Report:
 def _get_congestion_level(delay_minutes):
     """Helper function to categorize congestion level"""
     if delay_minutes == 0:
-        return "🟢 Clear"
+        return "Clear"
     elif delay_minutes <= 10:
-        return "🟡 Light"
+        return "Light"
     elif delay_minutes <= 20:
-        return "🟠 Moderate"
+        return "Moderate"
     else:
-        return "🔴 Heavy"
+        return "Heavy"
 
 def _get_route_recommendation(delay_minutes):
     """Helper function to provide route recommendations"""
@@ -47,7 +47,7 @@ def _get_route_recommendation(delay_minutes):
     elif delay_minutes <= 15:
         return "Consider alternative if time-sensitive"
     else:
-        return "⚠️ STRONGLY RECOMMEND alternative route"
+        return "STRONGLY RECOMMEND alternative route"
 
 schema_check_traffic = types.FunctionDeclaration(
     name="check_traffic",
@@ -99,7 +99,7 @@ def calculate_alternative_route(current_route_id, destination):
 
     # Find the best alternative
     best_route = min(alternatives, key=lambda r: TRAFFIC_CONDITIONS.get(r, {}).get("delay_minutes", 10))
-    route_options += f"🎯 RECOMMENDED: {best_route} (fastest alternative)"
+    route_options += f"RECOMMENDED: {best_route} (fastest alternative)"
 
     return route_options
 
@@ -143,9 +143,9 @@ Synchronized Notification Sent:
 
     notification_details += """
 Delivery Status:
-- Passenger: ✅ Notification received and acknowledged
-- Driver: ✅ Notification received, route updated in GPS
-- System: ✅ Both parties synchronized
+- Passenger: Notification received and acknowledged
+- Driver: Notification received, route updated in GPS
+- System: Both parties synchronized
 """
 
     return notification_details.strip()

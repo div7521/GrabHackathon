@@ -39,7 +39,7 @@ Safe Drop-off Analysis:
 - Security Level Required: {'High' if package_val > 50 else 'Standard'}
 - Area Assessment: {area}
 
-🏢 RECOMMENDED DROP-OFF OPTIONS:
+RECOMMENDED DROP-OFF OPTIONS:
 
 """
 
@@ -52,7 +52,7 @@ Safe Drop-off Analysis:
         suggestions += f"   - Availability: {availability}\n"
         suggestions += f"   - Recipient Notification: {'Required' if package_val > 50 else 'Recommended'}\n\n"
 
-    suggestions += "⚠️ IMPORTANT: All drop-offs require photo confirmation and recipient notification"
+    suggestions += "IMPORTANT: All drop-offs require photo confirmation and recipient notification"
 
     return suggestions
 
@@ -96,7 +96,7 @@ Nearby Parcel Locker Search:
 - Available Lockers: {len(lockers)} facilities found
 - Search Radius: 2 miles
 
-🔒 AVAILABLE LOCKER FACILITIES:
+AVAILABLE LOCKER FACILITIES:
 
 """
 
@@ -117,10 +117,10 @@ Nearby Parcel Locker Search:
 
     # Add package dimension check if provided
     if package_dimensions:
-        locker_results += f"📦 Package Dimensions: {package_dimensions}\n"
-        locker_results += "✅ Size compatibility verified for all listed lockers\n\n"
+        locker_results += f"Package Dimensions: {package_dimensions}\n"
+        locker_results += "Size compatibility verified for all listed lockers\n\n"
 
-    locker_results += """🔧 AUTO-SETUP FEATURES:
+    locker_results += """AUTO-SETUP FEATURES:
 - Recipient SMS with pickup code
 - Location directions and photos
 - Pickup reminder notifications
@@ -187,24 +187,24 @@ Merchant Feedback Report Generated:
 - Incident Reference: {incident_id}
 - Feedback Type: {feedback_type}
 - Severity Level: {category_info['severity']}
-- Evidence Attached: ✅ Photos and incident details included
+- Evidence Attached: Photos and incident details included
 
-📋 FEEDBACK SUMMARY:
+FEEDBACK SUMMARY:
 {evidence_details}
 
-🎯 RECOMMENDED ACTIONS:
+RECOMMENDED ACTIONS:
 - Primary Action: {category_info['action_required']}
 - Staff Training: {category_info['training_needed']}
 - Follow-up Required: {'Yes' if category_info['severity'] == 'High' else 'Optional'}
 - Implementation Timeline: {'Within 7 days' if category_info['severity'] == 'High' else 'Within 30 days'}
 
-📊 MERCHANT IMPACT:
+MERCHANT IMPACT:
 - Quality Score Impact: {'Moderate decrease' if category_info['severity'] == 'High' else 'Minor adjustment'}
 - Monitoring Period: 30 days increased oversight
-- Support Offered: ✅ Best practices guide sent
-- Training Resources: ✅ Available in merchant portal
+- Support Offered: Best practices guide sent
+- Training Resources: Available in merchant portal
 
-Delivery Method: ✅ Sent to merchant dashboard + email notification
+Delivery Method: Sent to merchant dashboard + email notification
 Response Expected: Within 48 hours for high severity issues
 """
 

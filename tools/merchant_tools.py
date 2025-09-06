@@ -24,7 +24,7 @@ Merchant Status Report:
 - Current Status: {merchant['status']}
 - Base Prep Time: {base_prep} minutes
 - Current Prep Time: {current_prep} minutes
-- System Alert: {'⚠️ HIGH DELAY' if current_prep > 30 else '✅ NORMAL OPERATIONS'}
+- System Alert: {'HIGH DELAY' if current_prep > 30 else 'NORMAL OPERATIONS'}
 """
 
     return status_message.strip()
@@ -115,7 +115,7 @@ Customer Notification Sent:
         notification_sent += f"- Compensation Offered: {compensation}\n"
         notification_sent += "- Customer Response Required: Accept/Decline compensation\n"
 
-    notification_sent += "- Status: ✅ Successfully Delivered"
+    notification_sent += "- Status: Successfully Delivered"
 
     return notification_sent
 

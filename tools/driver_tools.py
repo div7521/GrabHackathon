@@ -28,9 +28,9 @@ Driver Re-routing Executed:
 - Distance to New Task: {selected_task['location']}
 - Estimated Completion Time: {estimated_time} minutes
 - Return Time to Original Order: +{int(estimated_time) + random.randint(5, 15)} minutes
-- Driver Status: ✅ Accepted new assignment
-- GPS Navigation: ✅ Updated with new route
-- Earnings Impact: ✅ Optimized (no idle time loss)
+- Driver Status: Accepted new assignment
+- GPS Navigation: Updated with new route
+- Earnings Impact: Optimized (no idle time loss)
 """
 
     return reroute_result
@@ -76,13 +76,13 @@ Driver Exoneration Processed:
 - Incident ID: {incident_id}
 - Case Number: {case_number}
 - Evidence Reviewed: {evidence_summary}
-- Decision: ✅ DRIVER EXONERATED
+- Decision: DRIVER EXONERATED
 - Fault Assignment: Merchant/External factors
-- Rating Impact: ✅ No negative rating applied
-- Earnings Impact: ✅ Full payment maintained
-- Record Update: ✅ Incident marked as "No Driver Fault"
-- Driver Notification: ✅ Informed of exoneration
-- Appeal Status: ✅ Resolved - No further action needed
+- Rating Impact: No negative rating applied
+- Earnings Impact: Full payment maintained
+- Record Update: Incident marked as "No Driver Fault"
+- Driver Notification: Informed of exoneration
+- Appeal Status: Resolved - No further action needed
 
 Driver Protection Measures Applied:
 - Performance metrics: Unaffected

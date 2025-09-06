@@ -16,9 +16,9 @@ Real-Time Mediation Session Initiated:
 - Driver ID: {driver_id}
 - Customer ID: {customer_id}
 - Dispute Type: {dispute_type}
-- Session Status: 🟢 ACTIVE
-- Interface: ✅ Synchronized on both devices
-- Order Completion: ⏸️ PAUSED until resolution
+- Session Status: ACTIVE
+- Interface: Synchronized on both devices
+- Order Completion: PAUSED until resolution
 
 Mediation Interface Features:
 - Real-time chat between parties
@@ -32,7 +32,7 @@ Session Controls:
 - Maximum Duration: 15 minutes
 - Auto-escalation: If unresolved after 10 minutes
 - Emergency Support: Available via panic button
-- Session Recording: ✅ Enabled for quality assurance
+- Session Recording: Enabled for quality assurance
 
 Next Step: Proceed to evidence collection phase
 """
@@ -96,8 +96,8 @@ Evidence Collection Results:
 - Evidence Type: {evidence_type}
 - Collecting Party: {party_type.title()}
 - Photos Submitted: {party_data['photos_taken']} images
-- Photo Quality: ✅ All images clear and relevant
-- Questionnaire Status: {'✅ Completed' if party_data['questionnaire_completed'] else '❌ Incomplete'}
+- Photo Quality: All images clear and relevant
+- Questionnaire Status: {'Completed' if party_data['questionnaire_completed'] else 'Incomplete'}
 - Response Time: {party_data['response_time']}
 - Compliance Level: {party_data['compliance'].replace('_', ' ').title()}
 
@@ -124,7 +124,7 @@ Evidence Details Collected:
 
     evidence_result += """
 
-Evidence Status: ✅ Successfully collected and stored
+Evidence Status: Successfully collected and stored
 Next Step: Ready for automated analysis
 """
 
@@ -190,7 +190,7 @@ AI Evidence Analysis Complete:
 - Analysis Confidence: {analysis['confidence']}
 - Processing Time: {random.randint(15, 45)} seconds
 
-🎯 FAULT DETERMINATION: {analysis['fault_determination'].replace('_', ' ').upper()}
+FAULT DETERMINATION: {analysis['fault_determination'].replace('_', ' ').upper()}
 
 Key Contributing Factors:
 """
@@ -199,7 +199,7 @@ Key Contributing Factors:
         analysis_result += f"{i}. {factor}\n"
 
     analysis_result += f"""
-📋 RECOMMENDED RESOLUTION:
+RECOMMENDED RESOLUTION:
 {analysis['recommended_action']}
 
 Resolution Breakdown:
@@ -208,7 +208,7 @@ Resolution Breakdown:
 - Merchant Impact: Feedback for process improvement
 - System Learning: Case added to ML training dataset
 
-Status: ✅ Ready for automated resolution execution
+Status: Ready for automated resolution execution
 """
 
     return analysis_result

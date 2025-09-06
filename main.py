@@ -32,11 +32,20 @@ def execute_tool_call(tool_name, arguments):
     except Exception as e:
         return f"Error executing {tool_name}: {str(e)}"
 
-def get_ai_response_with_tools(model, user_input):
+def get_ai_response_with_tools(model, user_input, product_type):
     """Get response from Gemini with tool calling support"""
     try:
+        # Create context-aware prompt based on product type
+        contextualized_input = f"""
+Product Context: {product_type}
+
+User Scenario: {user_input}
+
+Please analyze this scenario specifically in the context of {product_type} operations and provide appropriate solutions using the available tools.
+"""
+
         messages = [
-            types.Content(role="user", parts=[types.Part(text=user_input)])
+            types.Content(role="user", parts=[types.Part(text=contextualized_input)])
         ]
 
         response = model.models.generate_content(
@@ -66,8 +75,9 @@ def main():
     st.markdown("### Agentic Last-Mile Coordinator")
 
     st.markdown("""
-    **Project Synapse** is an intelligent AI agent that autonomously resolves complex delivery disruptions.
-    Describe a delivery scenario with problems, and watch the agent reason through solutions using available tools.
+    **Project Synapse** is an intelligent AI agent that autonomously resolves complex delivery disruptions across
+    GrabFood, GrabExpress, and GrabCar services. Select your product type and describe a delivery scenario with problems,
+    and watch the agent reason through solutions using available tools.
     """)
 
     # Initialize model in session state
@@ -75,16 +85,42 @@ def main():
         with st.spinner("Initializing Project Synapse with tools..."):
             try:
                 st.session_state.model = setup_gemini()
-                st.success("✅ Project Synapse initialized successfully!")
+                st.success("Project Synapse initialized successfully!")
             except Exception as e:
-                st.error(f"❌ Setup failed: {e}")
+                st.error(f"Setup failed: {e}")
                 st.stop()
 
+    # Product selection
+    st.markdown("### Select Grab Product")
+    product_type = st.selectbox(
+        "Choose the Grab service for your scenario:",
+        options=["GrabFood", "GrabExpress", "GrabCar"],
+        index=0,
+        help="Select the specific Grab product to get contextually relevant solutions"
+    )
+
+    # Product-specific descriptions
+    product_descriptions = {
+        "GrabFood": "Food delivery scenarios: Restaurant delays, damaged packaging, merchant issues, driver routing",
+        "GrabExpress": "Package delivery scenarios: Recipient unavailability, valuable packages, secure drop-offs",
+        "GrabCar": "Ride scenarios: Traffic disruptions, route optimization, passenger urgency, flight connections"
+    }
+
+    st.info(product_descriptions[product_type])
+
     st.markdown("### Describe Your Delivery Scenario")
+
+    # Product-specific placeholders
+    placeholders = {
+        "GrabFood": "Example: Restaurant restaurant_002 is overloaded with 40-minute prep time. Customer CUST_123 has an urgent order and is getting impatient. The driver DRIVER_456 is waiting idle. What should we do?",
+        "GrabExpress": "Example: Driver arrived at destination but recipient is unavailable for a valuable $200 electronics package. Package requires secure handling. What are the options?",
+        "GrabCar": "Example: Passenger is heading to airport with flight SQ123 departing at 3 PM. Major accident detected on route_002 causing 30-minute delay. Current time is 1:30 PM. What should we do?"
+    }
+
     user_input = st.text_area(
         "Enter a complex delivery disruption scenario:",
-        placeholder="Example: Restaurant restaurant_002 is overloaded with 40-minute prep time. Customer CUST_123 has an urgent order and is getting impatient. The driver DRIVER_456 is waiting idle. What should we do?",
-        height=100
+        placeholder=placeholders[product_type],
+        height=120
     )
 
 
@@ -93,20 +129,24 @@ def main():
     if st.button("Analyze & Resolve", type="primary"):
         if user_input.strip():
             st.markdown("---")
-            st.markdown("### Project Synapse Analysis")
+            st.markdown(f"### Project Synapse Analysis - {product_type}")
 
-            with st.spinner("Agent is analyzing the scenario and planning actions..."):
-                response = get_ai_response_with_tools(st.session_state.model, user_input)
+            # Show selected product context
+            st.markdown(f"**Product Context:** {product_type}")
+
+            with st.spinner(f"Agent is analyzing the {product_type} scenario and planning actions..."):
+                response = get_ai_response_with_tools(st.session_state.model, user_input, product_type)
 
             # Display the response
             st.markdown(response)
 
         else:
-            st.warning("⚠️ Please describe a delivery scenario!")
+            st.warning("Please describe a delivery scenario!")
 
-    # Add footer
+    # Add footer with product info
     st.markdown("---")
     st.markdown("**Project Synapse** - Autonomous Last-Mile Delivery Coordination")
+    st.markdown("*Supporting GrabFood | GrabExpress | GrabCar*")
 
 if __name__ == "__main__":
     main()

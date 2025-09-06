@@ -38,8 +38,8 @@ Chat Contact Attempt:
 - Recipient ID: {recipient_id}
 - Message Sent: {message}
 - Message Type: {message_type}
-- Delivery Status: ✅ Message delivered
-- Read Receipt: ✅ Message read
+- Delivery Status: Message delivered
+- Read Receipt: Message read
 - Response Status: {scenario['status']}
 """
 
@@ -97,9 +97,9 @@ Instant Refund Processed:
 - Transaction ID: {transaction_id}
 - Refund Method: {selected_method}
 - Processing Time: {processing_time}
-- Status: ✅ APPROVED & PROCESSED
-- Customer Notification: ✅ SMS and push notification sent
-- Accounting: ✅ Automatically logged for reconciliation
+- Status: APPROVED & PROCESSED
+- Customer Notification: SMS and push notification sent
+- Accounting: Automatically logged for reconciliation
 """
 
     # Add additional details based on refund reason
