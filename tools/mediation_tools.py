@@ -1,19 +1,19 @@
 import random
-from google.generativeai import types
+from google.genai import types
 
 def initiate_mediation_flow(order_id, driver_id, customer_id, dispute_type):
     """
     Start a real-time mediation session between driver and customer
     for at-the-door disputes, creating a synchronized resolution interface.
     """
-    
+
     session_id = f"MED_{random.randint(100000, 999999)}"
-    
+
     mediation_setup = f"""
 Real-Time Mediation Session Initiated:
 - Session ID: {session_id}
 - Order ID: {order_id}
-- Driver ID: {driver_id}  
+- Driver ID: {driver_id}
 - Customer ID: {customer_id}
 - Dispute Type: {dispute_type}
 - Session Status: 🟢 ACTIVE
@@ -36,34 +36,34 @@ Session Controls:
 
 Next Step: Proceed to evidence collection phase
 """
-    
+
     return mediation_setup
 
 schema_initiate_mediation_flow = types.FunctionDeclaration(
     name="initiate_mediation_flow",
     description="Initiates a real-time mediation session between driver and customer for at-the-door disputes. Creates synchronized interface on both devices to resolve conflicts immediately.",
-    parameters={
-        "type": "object",
-        "properties": {
-            "order_id": {
-                "type": "string",
-                "description": "The order ID where the dispute occurred",
-            },
-            "driver_id": {
-                "type": "string",
-                "description": "The driver involved in the dispute",
-            },
-            "customer_id": {
-                "type": "string",
-                "description": "The customer involved in the dispute",
-            },
-            "dispute_type": {
-                "type": "string",
-                "description": "Type of dispute (e.g., 'damaged_packaging', 'missing_items', 'delivery_condition')",
-            },
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "order_id": types.Schema(
+                type=types.Type.STRING,
+                description="The order ID where the dispute occurred",
+            ),
+            "driver_id": types.Schema(
+                type=types.Type.STRING,
+                description="The driver involved in the dispute",
+            ),
+            "customer_id": types.Schema(
+                type=types.Type.STRING,
+                description="The customer involved in the dispute",
+            ),
+            "dispute_type": types.Schema(
+                type=types.Type.STRING,
+                description="Type of dispute (e.g., 'damaged_packaging', 'missing_items', 'delivery_condition')",
+            ),
         },
-        "required": ["order_id", "driver_id", "customer_id", "dispute_type"],
-    },
+        required=["order_id", "driver_id", "customer_id", "dispute_type"],
+    ),
 )
 
 def collect_evidence(session_id, evidence_type, party_type):
@@ -71,7 +71,7 @@ def collect_evidence(session_id, evidence_type, party_type):
     Guide both driver and customer through structured evidence collection
     with photos, questionnaires, and relevant documentation.
     """
-    
+
     # Simulate evidence collection results
     evidence_scenarios = {
         "driver": {
@@ -81,15 +81,15 @@ def collect_evidence(session_id, evidence_type, party_type):
             "compliance": random.choice(["fully_compliant", "partially_compliant"])
         },
         "customer": {
-            "photos_taken": random.randint(1, 4), 
+            "photos_taken": random.randint(1, 4),
             "questionnaire_completed": True,
             "response_time": f"{random.randint(1, 6)} minutes",
             "compliance": random.choice(["fully_compliant", "partially_compliant"])
         }
     }
-    
+
     party_data = evidence_scenarios.get(party_type, evidence_scenarios["customer"])
-    
+
     evidence_result = f"""
 Evidence Collection Results:
 - Session ID: {session_id}
@@ -103,54 +103,54 @@ Evidence Collection Results:
 
 Evidence Details Collected:
 """
-    
+
     if evidence_type == "damaged_packaging":
         evidence_result += """- Package condition upon handover: Documented
 - Seal integrity status: Photographed
 - Damage location and extent: Mapped
 - Handling process verification: Recorded"""
-    
+
     elif evidence_type == "missing_items":
         evidence_result += """- Package weight verification: Recorded
-- Merchant packaging process: Documented  
+- Merchant packaging process: Documented
 - Delivery bag inspection: Photographed
 - Item checklist comparison: Completed"""
-    
+
     else:
         evidence_result += """- General delivery condition: Documented
 - Environmental factors: Recorded
 - Process adherence: Verified
 - Timeline verification: Logged"""
-    
-    evidence_result += f"""
+
+    evidence_result += """
 
 Evidence Status: ✅ Successfully collected and stored
 Next Step: Ready for automated analysis
 """
-    
+
     return evidence_result
 
 schema_collect_evidence = types.FunctionDeclaration(
     name="collect_evidence",
     description="Guides both driver and customer through structured evidence collection using photos, questionnaires, and documentation. Essential for fair dispute resolution.",
-    parameters={
-        "type": "object",
-        "properties": {
-            "session_id": {
-                "type": "string",
-                "description": "The mediation session ID where evidence is being collected",
-            },
-            "evidence_type": {
-                "type": "string",
-                "description": "Type of evidence being collected (e.g., 'damaged_packaging', 'missing_items', 'delivery_condition')",
-            },
-            "party_type": {
-                "type": "string",
-                "description": "Which party is providing evidence ('driver' or 'customer')",
-            },
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "session_id": types.Schema(
+                type=types.Type.STRING,
+                description="The mediation session ID where evidence is being collected",
+            ),
+            "evidence_type": types.Schema(
+                type=types.Type.STRING,
+                description="Type of evidence being collected (e.g., 'damaged_packaging', 'missing_items', 'delivery_condition')",
+            ),
+            "party_type": types.Schema(
+                type=types.Type.STRING,
+                description="Which party is providing evidence ('driver' or 'customer')",
+            ),
         },
-        "required": ["session_id", "evidence_type", "party_type"],
-    },
+        required=["session_id", "evidence_type", "party_type"],
+    ),
 )
 
 def analyze_evidence(session_id, collected_evidence_summary):
@@ -158,7 +158,7 @@ def analyze_evidence(session_id, collected_evidence_summary):
     AI-powered analysis of collected evidence to determine fault
     and recommend fair resolution for all parties involved.
     """
-    
+
     # Simulate AI analysis results
     analysis_outcomes = [
         {
@@ -168,21 +168,21 @@ def analyze_evidence(session_id, collected_evidence_summary):
             "recommended_action": "Full customer refund + driver exoneration"
         },
         {
-            "fault_determination": "no_fault_incident", 
+            "fault_determination": "no_fault_incident",
             "confidence": "87%",
             "key_factors": ["External factors", "Reasonable handling", "Unavoidable circumstances"],
             "recommended_action": "Partial customer compensation + driver protection"
         },
         {
             "fault_determination": "shared_responsibility",
-            "confidence": "76%", 
+            "confidence": "76%",
             "key_factors": ["Mixed evidence", "Multiple contributing factors"],
             "recommended_action": "Split compensation + education for both parties"
         }
     ]
-    
+
     analysis = random.choice(analysis_outcomes)
-    
+
     analysis_result = f"""
 AI Evidence Analysis Complete:
 - Session ID: {session_id}
@@ -194,40 +194,40 @@ AI Evidence Analysis Complete:
 
 Key Contributing Factors:
 """
-    
+
     for i, factor in enumerate(analysis['key_factors'], 1):
         analysis_result += f"{i}. {factor}\n"
-    
+
     analysis_result += f"""
 📋 RECOMMENDED RESOLUTION:
 {analysis['recommended_action']}
 
 Resolution Breakdown:
 - Customer Impact: Fair compensation based on evidence
-- Driver Impact: Protection from unfair penalties  
+- Driver Impact: Protection from unfair penalties
 - Merchant Impact: Feedback for process improvement
 - System Learning: Case added to ML training dataset
 
 Status: ✅ Ready for automated resolution execution
 """
-    
+
     return analysis_result
 
 schema_analyze_evidence = types.FunctionDeclaration(
     name="analyze_evidence",
     description="AI-powered analysis of collected dispute evidence to determine fault and recommend fair resolutions. Uses machine learning to ensure objective decision-making.",
-    parameters={
-        "type": "object",
-        "properties": {
-            "session_id": {
-                "type": "string",
-                "description": "The mediation session ID being analyzed",
-            },
-            "collected_evidence_summary": {
-                "type": "string",
-                "description": "Summary of all evidence collected from both parties",
-            },
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "session_id": types.Schema(
+                type=types.Type.STRING,
+                description="The mediation session ID being analyzed",
+            ),
+            "collected_evidence_summary": types.Schema(
+                type=types.Type.STRING,
+                description="Summary of all evidence collected from both parties",
+            ),
         },
-        "required": ["session_id", "collected_evidence_summary"],
-    },
+        required=["session_id", "collected_evidence_summary"],
+    ),
 )
