@@ -1,6 +1,5 @@
 import random
 from config import TRAFFIC_CONDITIONS, ALTERNATIVE_ROUTES
-from google.genai import types
 
 def check_traffic(route_id):
     """
@@ -49,20 +48,7 @@ def _get_route_recommendation(delay_minutes):
     else:
         return "STRONGLY RECOMMEND alternative route"
 
-schema_check_traffic = types.FunctionDeclaration(
-    name="check_traffic",
-    description="Checks real-time traffic conditions on a specific route, including delays, incidents, and congestion levels. Critical for delivery time estimation and route planning.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "route_id": types.Schema(
-                type=types.Type.STRING,
-                description="The unique identifier of the route to check (e.g., 'route_001', 'route_002')",
-            ),
-        },
-        required=["route_id"],
-    ),
-)
+
 
 def calculate_alternative_route(current_route_id, destination):
     """
@@ -103,24 +89,7 @@ def calculate_alternative_route(current_route_id, destination):
 
     return route_options
 
-schema_calculate_alternative_route = types.FunctionDeclaration(
-    name="calculate_alternative_route",
-    description="Calculates and compares alternative routes when the primary route has traffic issues, accidents, or delays. Provides time estimates and recommendations.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "current_route_id": types.Schema(
-                type=types.Type.STRING,
-                description="The current route that has issues (e.g., 'route_002')",
-            ),
-            "destination": types.Schema(
-                type=types.Type.STRING,
-                description="The destination address or location name",
-            ),
-        },
-        required=["current_route_id", "destination"],
-    ),
-)
+
 
 def notify_passenger_and_driver(passenger_id, driver_id, message, new_route=None, updated_eta=None):
     """
@@ -149,34 +118,3 @@ Delivery Status:
 """
 
     return notification_details.strip()
-
-schema_notify_passenger_and_driver = types.FunctionDeclaration(
-    name="notify_passenger_and_driver",
-    description="Sends synchronized notifications to both passenger and driver about route changes, delays, or important updates. Ensures both parties have the same information.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "passenger_id": types.Schema(
-                type=types.Type.STRING,
-                description="The unique identifier of the passenger",
-            ),
-            "driver_id": types.Schema(
-                type=types.Type.STRING,
-                description="The unique identifier of the driver",
-            ),
-            "message": types.Schema(
-                type=types.Type.STRING,
-                description="The message to send to both parties",
-            ),
-            "new_route": types.Schema(
-                type=types.Type.STRING,
-                description="Optional new route information if route was changed",
-            ),
-            "updated_eta": types.Schema(
-                type=types.Type.STRING,
-                description="Optional updated estimated time of arrival",
-            ),
-        },
-        required=["passenger_id", "driver_id", "message"],
-    ),
-)

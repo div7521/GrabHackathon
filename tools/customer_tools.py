@@ -1,5 +1,5 @@
 import random
-from google.genai import types
+
 
 def contact_recipient_via_chat(recipient_id, message, message_type="automated"):
     """
@@ -53,28 +53,7 @@ Chat Contact Attempt:
 
     return chat_result.strip()
 
-schema_contact_recipient_via_chat = types.FunctionDeclaration(
-    name="contact_recipient_via_chat",
-    description="Contacts the package recipient through in-app chat when they're unavailable for delivery. Sends automated prompts asking for delivery instructions.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "recipient_id": types.Schema(
-                type=types.Type.STRING,
-                description="The unique identifier of the package recipient",
-            ),
-            "message": types.Schema(
-                type=types.Type.STRING,
-                description="The message to send to the recipient asking for delivery instructions",
-            ),
-            "message_type": types.Schema(
-                type=types.Type.STRING,
-                description="Type of message (automated, urgent, standard)",
-            ),
-        },
-        required=["recipient_id", "message"],
-    ),
-)
+
 
 def issue_instant_refund(customer_id, order_id, refund_amount, refund_reason):
     """
@@ -112,30 +91,3 @@ Instant Refund Processed:
         refund_result += "\n- Driver Impact: No penalty applied to driver"
 
     return refund_result
-
-schema_issue_instant_refund = types.FunctionDeclaration(
-    name="issue_instant_refund",
-    description="Processes an immediate refund to the customer for delivery issues, damaged items, or service failures. Handles payment processing and notifications automatically.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "customer_id": types.Schema(
-                type=types.Type.STRING,
-                description="The unique identifier of the customer receiving the refund",
-            ),
-            "order_id": types.Schema(
-                type=types.Type.STRING,
-                description="The order ID associated with the refund",
-            ),
-            "refund_amount": types.Schema(
-                type=types.Type.STRING,
-                description="The refund amount (e.g., '15.50', '8.99')",
-            ),
-            "refund_reason": types.Schema(
-                type=types.Type.STRING,
-                description="Reason for the refund (e.g., 'damaged packaging', 'excessive delay', 'wrong order')",
-            ),
-        },
-        required=["customer_id", "order_id", "refund_amount", "refund_reason"],
-    ),
-)

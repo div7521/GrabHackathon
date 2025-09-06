@@ -1,10 +1,12 @@
 import os
 from dotenv import load_dotenv
 import streamlit as st
-from google import genai
-from google.genai import types
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.messages import HumanMessage, SystemMessage
+
 from prompt import system_prompt
-from tools import AVAILABLE_TOOLS, TOOL_SCHEMAS
+from tools import AVAILABLE_TOOLS, get_langchain_tools
+import json
 
 #loads environment variables from .env file to applications environment
 load_dotenv()
@@ -15,10 +17,19 @@ def setup_gemini():
     api_key=os.environ.get("GEMINI_API_KEY")
 
     if not api_key:
-        raise ValueError("GOOGLE_API_KEY not found in environment variables")
+        raise ValueError("GEMINI_API_KEY not found in environment variables")
 
-    client = genai.Client(api_key=api_key)
-    return client
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-1.5-flash",
+        google_api_key=api_key,
+        temperature=0.1
+    )
+
+    # Bind tools to the model
+    tools = get_langchain_tools()
+    llm_with_tools = llm.bind_tools(tools)
+
+    return llm_with_tools
 
 def execute_tool_call(tool_name, arguments):
     """Execute a tool call with given arguments"""
@@ -45,21 +56,30 @@ Please analyze this scenario specifically in the context of {product_type} opera
 """
 
         messages = [
-            types.Content(role="user", parts=[types.Part(text=contextualized_input)])
+            SystemMessage(content=system_prompt),
+            HumanMessage(content=contextualized_input)
         ]
 
-        response = model.models.generate_content(
-            model='gemini-1.5-flash',
-            contents=messages,
-            config=types.GenerateContentConfig(
-                system_instruction=system_prompt,
-                tools=[TOOL_SCHEMAS],
-            ),
-        )
+        response = model.invoke(messages)
 
-        if response.candidates and response.candidates[0].content:
-            return response.candidates[0].content.parts[0].text
-        return "No response generated"
+        # Handle tool calls if present
+        if hasattr(response, 'tool_calls') and response.tool_calls:
+            tool_results = []
+            for tool_call in response.tool_calls:
+                tool_name = tool_call['name']
+                tool_args = tool_call['args']
+                result = execute_tool_call(tool_name, tool_args)
+                tool_results.append(f"**{tool_name}({json.dumps(tool_args)})**:\n{result}")
+
+            # Create a comprehensive response including tool results
+            final_response = response.content
+            if tool_results:
+                final_response += "\n\n**Tool Execution Results:**\n\n" + "\n\n".join(tool_results)
+
+            return final_response
+        else:
+            return response.content
+
     except Exception as e:
         return f"Error getting response: {e}"
 
@@ -124,7 +144,6 @@ def main():
     )
 
 
-    # Submit button
     # Submit button
     if st.button("Analyze & Resolve", type="primary"):
         if user_input.strip():

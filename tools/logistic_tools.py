@@ -1,6 +1,6 @@
 import random
 from config import PARCEL_LOCKERS
-from google.genai import types
+
 
 def suggest_safe_drop_off(delivery_address, package_value, recipient_preferences=None):
     """
@@ -56,28 +56,7 @@ RECOMMENDED DROP-OFF OPTIONS:
 
     return suggestions
 
-schema_suggest_safe_drop_off = types.FunctionDeclaration(
-    name="suggest_safe_drop_off",
-    description="Suggests secure drop-off alternatives when the recipient is unavailable, considering package value, location safety, and building amenities.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "delivery_address": types.Schema(
-                type=types.Type.STRING,
-                description="The delivery address where safe drop-off is needed",
-            ),
-            "package_value": types.Schema(
-                type=types.Type.STRING,
-                description="The value of the package (e.g., '$25.00', '$150.00')",
-            ),
-            "recipient_preferences": types.Schema(
-                type=types.Type.STRING,
-                description="Any specific preferences mentioned by the recipient",
-            ),
-        },
-        required=["delivery_address", "package_value"],
-    ),
-)
+
 
 def find_nearby_locker(location, package_dimensions=None):
     """
@@ -128,24 +107,7 @@ AVAILABLE LOCKER FACILITIES:
 
     return locker_results
 
-schema_find_nearby_locker = types.FunctionDeclaration(
-    name="find_nearby_locker",
-    description="Locates secure parcel lockers near the delivery address as alternative delivery points when recipients are unavailable. Provides details on capacity, security, and costs.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "location": types.Schema(
-                type=types.Type.STRING,
-                description="The area to search for parcel lockers (e.g., 'Downtown', 'Mall Area', 'Business District')",
-            ),
-            "package_dimensions": types.Schema(
-                type=types.Type.STRING,
-                description="Optional package dimensions to check locker compatibility (e.g., '12x8x4 inches')",
-            ),
-        },
-        required=["location"],
-    ),
-)
+
 
 def log_merchant_packaging_feedback(merchant_id, incident_id, feedback_type, evidence_details):
     """
@@ -209,30 +171,3 @@ Response Expected: Within 48 hours for high severity issues
 """
 
     return feedback_report
-
-schema_log_merchant_packaging_feedback = types.FunctionDeclaration(
-    name="log_merchant_packaging_feedback",
-    description="Sends evidence-backed feedback to merchants about packaging issues, helping them improve processes and reduce future delivery problems. Includes severity assessment and recommended actions.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "merchant_id": types.Schema(
-                type=types.Type.STRING,
-                description="The merchant ID that needs to receive feedback",
-            ),
-            "incident_id": types.Schema(
-                type=types.Type.STRING,
-                description="The incident or dispute ID that generated this feedback",
-            ),
-            "feedback_type": types.Schema(
-                type=types.Type.STRING,
-                description="Type of packaging issue (e.g., 'packaging_inadequate', 'seal_issues', 'fragile_handling')",
-            ),
-            "evidence_details": types.Schema(
-                type=types.Type.STRING,
-                description="Detailed description of the evidence and specific packaging problems observed",
-            ),
-        },
-        required=["merchant_id", "incident_id", "feedback_type", "evidence_details"],
-    ),
-)

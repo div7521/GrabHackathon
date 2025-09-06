@@ -1,5 +1,5 @@
 import random
-from google.genai import types
+
 
 def re_route_driver(driver_id, current_order_id, new_task_type, estimated_time):
     """
@@ -35,32 +35,7 @@ Driver Re-routing Executed:
 
     return reroute_result
 
-schema_re_route_driver = types.FunctionDeclaration(
-    name="re_route_driver",
-    description="Reassigns a driver to a different short task while waiting for delayed orders, optimizing their time and preventing idle waiting. Helps maintain driver earnings during disruptions.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "driver_id": types.Schema(
-                type=types.Type.STRING,
-                description="The unique identifier of the driver to reassign",
-            ),
-            "current_order_id": types.Schema(
-                type=types.Type.STRING,
-                description="The current order that's experiencing delays",
-            ),
-            "new_task_type": types.Schema(
-                type=types.Type.STRING,
-                description="Type of new task to assign (e.g., 'short_delivery', 'pickup_only', 'package_run')",
-            ),
-            "estimated_time": types.Schema(
-                type=types.Type.STRING,
-                description="Estimated time for the new task in minutes",
-            ),
-        },
-        required=["driver_id", "current_order_id", "new_task_type", "estimated_time"],
-    ),
-)
+
 
 def exonerate_driver(driver_id, incident_id, evidence_summary):
     """
@@ -92,26 +67,3 @@ Driver Protection Measures Applied:
 """
 
     return exoneration_result
-
-schema_exonerate_driver = types.FunctionDeclaration(
-    name="exonerate_driver",
-    description="Clears a driver of fault when evidence shows they were not responsible for delivery issues. Protects driver ratings, earnings, and account standing.",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "driver_id": types.Schema(
-                type=types.Type.STRING,
-                description="The unique identifier of the driver to exonerate",
-            ),
-            "incident_id": types.Schema(
-                type=types.Type.STRING,
-                description="The incident or dispute ID being resolved",
-            ),
-            "evidence_summary": types.Schema(
-                type=types.Type.STRING,
-                description="Summary of evidence showing driver was not at fault",
-            ),
-        },
-        required=["driver_id", "incident_id", "evidence_summary"],
-    ),
-)
