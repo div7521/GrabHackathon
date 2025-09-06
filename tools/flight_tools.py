@@ -1,13 +1,12 @@
 import random
 from datetime import datetime, timedelta
-from google.generativeai import types
 
 def check_flight_status(flight_number, airline=None, departure_airport=None):
     """
     Check real-time flight status to help coordinate urgent deliveries
     to passengers heading to the airport.
     """
-    
+
     # Simulate realistic flight scenarios
     flight_scenarios = [
         {
@@ -18,7 +17,7 @@ def check_flight_status(flight_number, airline=None, departure_airport=None):
             "estimated_boarding": "45 minutes"
         },
         {
-            "status": "Delayed", 
+            "status": "Delayed",
             "departure_delay": random.randint(15, 90),
             "gate": f"B{random.randint(1, 25)}",
             "boarding_status": "Delayed",
@@ -28,7 +27,7 @@ def check_flight_status(flight_number, airline=None, departure_airport=None):
             "status": "Boarding",
             "departure_delay": random.randint(-5, 10),
             "gate": f"C{random.randint(1, 20)}",
-            "boarding_status": "Now Boarding", 
+            "boarding_status": "Now Boarding",
             "estimated_boarding": "In Progress"
         },
         {
@@ -39,14 +38,14 @@ def check_flight_status(flight_number, airline=None, departure_airport=None):
             "estimated_boarding": "Closing Soon"
         }
     ]
-    
+
     scenario = random.choice(flight_scenarios)
-    
+
     # Calculate times
     now = datetime.now()
     scheduled_departure = now + timedelta(minutes=random.randint(30, 180))
     actual_departure = scheduled_departure + timedelta(minutes=scenario['departure_delay'])
-    
+
     flight_info = f"""
 Flight Status Report:
 - Flight Number: {flight_number}
@@ -62,9 +61,9 @@ Flight Status Report:
 - Boarding Status: {scenario['boarding_status']}
 - Estimated Boarding: {scenario['estimated_boarding']}
 
-🚨 PASSENGER URGENCY ASSESSMENT:
+PASSENGER URGENCY ASSESSMENT:
 """
-    
+
     if scenario['status'] == "On Time":
         flight_info += "- Urgency Level: MODERATE - Standard delivery timeline acceptable"
         flight_info += "\n- Recommendation: Proceed with normal delivery"
@@ -77,36 +76,13 @@ Flight Status Report:
     else:  # Final Call
         flight_info += "- Urgency Level: CRITICAL - Flight boarding is closing"
         flight_info += "\n- Recommendation: EMERGENCY delivery protocols"
-    
+
     flight_info += f"""
 
-📍 DELIVERY COORDINATION:
+DELIVERY COORDINATION:
 - Airport Arrival Recommended: {(actual_departure - timedelta(minutes=90)).strftime('%I:%M %p')}
 - Traffic Buffer Time: 30 minutes recommended
 - Drop-off Location: Departure terminal curbside
 """
-    
-    return flight_info
 
-schema_check_flight_status = types.FunctionDeclaration(
-    name="check_flight_status",
-    description="Checks real-time flight status to coordinate urgent deliveries to passengers heading to airport. Provides departure times, delays, and urgency assessment.",
-    parameters={
-        "type": "object",
-        "properties": {
-            "flight_number": {
-                "type": "string",
-                "description": "The flight number to check (e.g., 'AA123', 'SQ456')",
-            },
-            "airline": {
-                "type": "string",
-                "description": "The airline name (optional, for verification)",
-            },
-            "departure_airport": {
-                "type": "string",
-                "description": "The departure airport code or name (optional)",
-            },
-        },
-        "required": ["flight_number"],
-    },
-)
+    return flight_info
