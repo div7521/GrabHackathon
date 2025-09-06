@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import streamlit as st
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage, SystemMessage
+from logging_config import tool_logger
 
 from prompt import system_prompt
 from tools import AVAILABLE_TOOLS, get_langchain_tools
@@ -33,6 +34,9 @@ def setup_gemini():
 
 def execute_tool_call(tool_name, arguments):
     """Execute a tool call with given arguments"""
+    # Log tool call
+    tool_logger.info(f"Calling tool: {tool_name}")
+
     if tool_name not in AVAILABLE_TOOLS:
         return f"Error: Tool '{tool_name}' not found"
 
