@@ -33,22 +33,42 @@ def setup_gemini():
     return llm_with_tools
 
 def execute_tool_call(tool_name, arguments):
-    """Execute a tool call with given arguments"""
+    """Execute a tool call with given arguments and return structured results"""
     # Log tool call
     tool_logger.info(f"Calling tool: {tool_name}")
 
     if tool_name not in AVAILABLE_TOOLS:
-        return f"Error: Tool '{tool_name}' not found"
+        error_msg = f"Tool '{tool_name}' not found in available tools. Available tools: {list(AVAILABLE_TOOLS.keys())}"
+        tool_logger.error(f"Tool not found: {tool_name}")
+        return {
+            "success": False,
+            "error": error_msg,
+            "tool_name": tool_name,
+            "suggestion": "Please use one of the available tools or proceed with manual recommendations."
+        }
 
     try:
         tool_function = AVAILABLE_TOOLS[tool_name]
         result = tool_function(**arguments)
-        return result
+        tool_logger.info(f"Tool {tool_name} executed successfully")
+        return {
+            "success": True,
+            "result": result,
+            "tool_name": tool_name
+        }
     except Exception as e:
-        return f"Error executing {tool_name}: {str(e)}"
+        error_msg = f"Tool execution failed: {str(e)}"
+        tool_logger.error(f"Tool {tool_name} failed: {str(e)}")
+        return {
+            "success": False,
+            "error": error_msg,
+            "tool_name": tool_name,
+            "arguments": arguments,
+            "suggestion": f"Tool {tool_name} is temporarily unavailable. Please proceed with alternative approaches or manual recommendations."
+        }
 
 def get_ai_response_with_tools(model, user_input, product_type):
-    """Get response from Gemini with tool calling support"""
+    """Get response from Gemini with error-resilient tool calling support"""
     try:
         # Create context-aware prompt based on product type
         contextualized_input = f"""
@@ -57,6 +77,8 @@ Product Context: {product_type}
 User Scenario: {user_input}
 
 Please analyze this scenario specifically in the context of {product_type} operations and provide appropriate solutions using the available tools.
+
+IMPORTANT: If any tools fail or return errors, continue your analysis and provide alternative solutions. Tool failures should not prevent you from delivering comprehensive recommendations.
 """
 
         messages = [
@@ -64,28 +86,86 @@ Please analyze this scenario specifically in the context of {product_type} opera
             HumanMessage(content=contextualized_input)
         ]
 
+        # Initial response with potential tool calls
         response = model.invoke(messages)
 
         # Handle tool calls if present
         if hasattr(response, 'tool_calls') and response.tool_calls:
             tool_results = []
+            successful_tools = 0
+            failed_tools = 0
+
             for tool_call in response.tool_calls:
                 tool_name = tool_call['name']
                 tool_args = tool_call['args']
                 result = execute_tool_call(tool_name, tool_args)
-                tool_results.append(f"**{tool_name}({json.dumps(tool_args)})**:\n{result}")
 
-            # Create a comprehensive response including tool results
-            final_response = response.content
-            if tool_results:
-                final_response += "\n\n**Tool Execution Results:**\n\n" + "\n\n".join(tool_results)
+                # Format result based on success/failure
+                if isinstance(result, dict):
+                    if result.get('success'):
+                        tool_results.append(f"**{tool_name}({json.dumps(tool_args)}) - SUCCESS**:\n{result['result']}")
+                        successful_tools += 1
+                    else:
+                        tool_results.append(f"**{tool_name}({json.dumps(tool_args)}) - FAILED**:\nError: {result['error']}\nSuggestion: {result.get('suggestion', 'Please proceed with alternative approaches.')}")
+                        failed_tools += 1
+                else:
+                    # Legacy format support
+                    if result.startswith("Error"):
+                        tool_results.append(f"**{tool_name}({json.dumps(tool_args)}) - FAILED**:\n{result}")
+                        failed_tools += 1
+                    else:
+                        tool_results.append(f"**{tool_name}({json.dumps(tool_args)}) - SUCCESS**:\n{result}")
+                        successful_tools += 1
+
+            # If there were failures, give the agent another chance to provide solutions
+            if failed_tools > 0:
+                # Create follow-up prompt with tool failure context
+                tool_failure_context = f"""
+Previous tool execution summary:
+- Successful tools: {successful_tools}
+- Failed tools: {failed_tools}
+
+Tool Results:
+{chr(10).join(tool_results)}
+
+Some tools failed, but please continue with your analysis and provide comprehensive solutions using:
+1. Information from successful tools
+2. Your domain knowledge of {product_type} operations
+3. Alternative approaches that don't rely on failed tools
+4. Manual procedures and recommendations
+
+Please provide a complete solution despite the tool failures.
+"""
+
+                # Get follow-up response
+                follow_up_messages = messages + [
+                    response,
+                    HumanMessage(content=tool_failure_context)
+                ]
+
+                try:
+                    follow_up_response = model.invoke(follow_up_messages)
+
+                    # Combine responses
+                    final_response = response.content + "\n\n**Tool Execution Results:**\n\n" + "\n\n".join(tool_results)
+                    final_response += f"\n\n**Continued Analysis (Post Tool Execution):**\n\n{follow_up_response.content}"
+
+                except Exception as e:
+                    # If follow-up fails, just use original response with tool results
+                    final_response = response.content + "\n\n**Tool Execution Results:**\n\n" + "\n\n".join(tool_results)
+                    final_response += f"\n\n**Note:** Follow-up analysis failed: {str(e)}"
+            else:
+                # All tools succeeded
+                final_response = response.content + "\n\n**Tool Execution Results:**\n\n" + "\n\n".join(tool_results)
 
             return final_response
         else:
             return response.content
 
     except Exception as e:
-        return f"Error getting response: {e}"
+        error_msg = f"Error in agent processing: {e}"
+        tool_logger.error(error_msg)
+        return f"I encountered a system error, but I can still help you analyze this {product_type} scenario manually. Please let me provide recommendations based on the situation you described:\n\n{user_input}\n\nBased on typical {product_type} operations, here are some general approaches you could consider... [Error: {error_msg}]"
 
 
 def main():
