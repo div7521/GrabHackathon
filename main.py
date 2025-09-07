@@ -167,22 +167,98 @@ Please provide a complete solution despite the tool failures.
         tool_logger.error(error_msg)
         return f"I encountered a system error, but I can still help you analyze this {product_type} scenario manually. Please let me provide recommendations based on the situation you described:\n\n{user_input}\n\nBased on typical {product_type} operations, here are some general approaches you could consider... [Error: {error_msg}]"
 
+def show_feedback_controls(message_index):
+    """Shows the "How did I do?" control."""
+    st.write("")
+
+    with st.popover("How did I do?"):
+        with st.form(key=f"feedback-{message_index}", border=False):
+            with st.container(gap=None):
+                st.markdown(":small[Rating]")
+                rating = st.feedback(options="stars")
+
+            details = st.text_area("More information (optional)")
+
+            if st.checkbox("Include chat history with my feedback", True):
+                relevant_history = st.session_state.messages[:message_index]
+            else:
+                relevant_history = []
+
+            ""  # Add some space
+
+            if st.form_submit_button("Send feedback"):
+                st.success("Thank you for your feedback!")
+
+# Product-specific examples for quick start
+PRODUCT_EXAMPLES = {
+    "GrabFood": {
+        ":orange[:material/restaurant:] Restaurant Overload": (
+            "Restaurant restaurant_002 is overloaded with 40-minute prep time. "
+            "Customer CUST_123 has an urgent order and is getting impatient. "
+            "The driver DRIVER_456 is waiting idle. What should we do?"
+        ),
+        ":red[:material/delivery_dining:] Damaged Package": (
+            "Food package arrived damaged due to rough handling during delivery. "
+            "Customer is upset and demanding full refund. Driver says it was "
+            "already damaged when picked up. How to resolve?"
+        ),
+        ":blue[:material/schedule:] Delivery Delay": (
+            "Driver is stuck in traffic with a hot food order that's already "
+            "30 minutes late. Customer is calling repeatedly. Restaurant can't "
+            "remake the order. What are our options?"
+        ),
+    },
+    "GrabExpress": {
+        ":violet[:material/local_shipping:] Recipient Unavailable": (
+            "Driver arrived at destination but recipient is unavailable for a "
+            "valuable $200 electronics package. Package requires secure handling. "
+            "What are the delivery options?"
+        ),
+        ":green[:material/security:] High-Value Package": (
+            "Delivering a $500 jewelry package to a residential area with no "
+            "secure drop-off location. Customer won't be home for 3 hours. "
+            "How should we handle this?"
+        ),
+        ":orange[:material/warning:] Package Damage": (
+            "Fragile glass items package shows visible damage during transit. "
+            "Customer refuses delivery. Sender wants investigation. "
+            "What's the proper procedure?"
+        ),
+    },
+    "GrabCar": {
+        ":red[:material/flight:] Airport Rush": (
+            "Passenger is heading to airport with flight SQ123 departing at 3 PM. "
+            "Major accident detected on route_002 causing 30-minute delay. "
+            "Current time is 1:30 PM. What should we do?"
+        ),
+        ":blue[:material/traffic:] Traffic Jam": (
+            "Heavy traffic on main route is adding 45 minutes to journey. "
+            "Passenger has important business meeting. Driver suggests longer "
+            "but faster alternative route. How to handle?"
+        ),
+        ":yellow[:material/directions_car:] Vehicle Breakdown": (
+            "Driver's car broke down mid-journey with passenger inside. "
+            "Nearest replacement driver is 20 minutes away. Passenger is "
+            "getting anxious about missing appointment. What's the solution?"
+        ),
+    },
+}
 
 def main():
     """Main function to run the AI agent with Streamlit"""
 
     st.set_page_config(
         page_title="Project Synapse",
-        layout="wide"
+        layout="wide",
+        page_icon="🧠"
     )
-    st.title("Synapse")
-    st.markdown("### Agentic Last-Mile Coordinator")
 
-    st.markdown("""
-    **Project Synapse** is an intelligent AI agent that autonomously resolves complex delivery disruptions across
-    GrabFood, GrabExpress, and GrabCar services. Select your product type and describe a delivery scenario with problems,
-    and watch the agent reason through solutions using available tools.
-    """)
+    # Initialize session state
+    if 'messages' not in st.session_state:
+        st.session_state.messages = []
+    
+    if 'product_type' not in st.session_state:
+        st.session_state.product_type = "GrabFood"
 
     # Initialize model in session state
     if 'model' not in st.session_state:
@@ -194,62 +270,125 @@ def main():
                 st.error(f"Setup failed: {e}")
                 st.stop()
 
-    # Product selection
-    st.markdown("### Select Grab Product")
-    product_type = st.selectbox(
-        "Choose the Grab service for your scenario:",
-        options=["GrabFood", "GrabExpress", "GrabCar"],
-        index=0,
-        help="Select the specific Grab product to get contextually relevant solutions"
+    # Header with title and restart button
+    title_row = st.container(horizontal=True, vertical_alignment="bottom")
+    
+    with title_row:
+        st.title("🧠 Project Synapse", anchor=False, width="stretch")
+        st.caption("Agentic Last-Mile Coordinator")
+
+        def clear_conversation():
+            st.session_state.messages = []
+            st.session_state.initial_question = None
+            st.session_state.selected_suggestion = None
+
+        st.button(
+            "Restart",
+            icon=":material/refresh:",
+            on_click=clear_conversation,
+        )
+
+    # Check for initial interactions
+    user_just_asked_initial_question = (
+        "initial_question" in st.session_state and st.session_state.initial_question
     )
 
-    # Product-specific descriptions
-    product_descriptions = {
-        "GrabFood": "Food delivery scenarios: Restaurant delays, damaged packaging, merchant issues, driver routing",
-        "GrabExpress": "Package delivery scenarios: Recipient unavailability, valuable packages, secure drop-offs",
-        "GrabCar": "Ride scenarios: Traffic disruptions, route optimization, passenger urgency, flight connections"
-    }
-
-    st.info(product_descriptions[product_type])
-
-    st.markdown("### Describe Your Delivery Scenario")
-
-    # Product-specific placeholders
-    placeholders = {
-        "GrabFood": "Example: Restaurant restaurant_002 is overloaded with 40-minute prep time. Customer CUST_123 has an urgent order and is getting impatient. The driver DRIVER_456 is waiting idle. What should we do?",
-        "GrabExpress": "Example: Driver arrived at destination but recipient is unavailable for a valuable $200 electronics package. Package requires secure handling. What are the options?",
-        "GrabCar": "Example: Passenger is heading to airport with flight SQ123 departing at 3 PM. Major accident detected on route_002 causing 30-minute delay. Current time is 1:30 PM. What should we do?"
-    }
-
-    user_input = st.text_area(
-        "Enter a complex delivery disruption scenario:",
-        placeholder=placeholders[product_type],
-        height=120
+    user_just_clicked_suggestion = (
+        "selected_suggestion" in st.session_state and st.session_state.selected_suggestion
     )
 
+    user_first_interaction = (
+        user_just_asked_initial_question or user_just_clicked_suggestion
+    )
 
-    # Submit button
-    if st.button("Analyze & Resolve", type="primary"):
-        if user_input.strip():
-            st.markdown("---")
-            st.markdown(f"### Project Synapse Analysis - {product_type}")
+    has_message_history = len(st.session_state.messages) > 0
 
+    # Show initial interface when no conversation exists
+    if not user_first_interaction and not has_message_history:
+        # Product selection
+        st.markdown("### Select Grab Product")
+        product_type = st.selectbox(
+            "Choose the Grab service for your scenario:",
+            options=["GrabFood", "GrabExpress", "GrabCar"],
+            index=0,
+            key="product_selector",
+            help="Select the specific Grab product to get contextually relevant solutions"
+        )
+        
+        st.session_state.product_type = product_type
+
+        # Product-specific descriptions
+        product_descriptions = {
+            "GrabFood": "🍽️ Food delivery scenarios: Restaurant delays, damaged packaging, merchant issues, driver routing",
+            "GrabExpress": "📦 Package delivery scenarios: Recipient unavailability, valuable packages, secure drop-offs",
+            "GrabCar": "🚗 Ride scenarios: Traffic disruptions, route optimization, passenger urgency, flight connections"
+        }
+
+        st.info(product_descriptions[product_type])
+
+        with st.container():
+            st.chat_input("Describe a complex delivery disruption scenario...", key="initial_question")
+
+            # Show product-specific examples
+            if product_type in PRODUCT_EXAMPLES:
+                selected_suggestion = st.pills(
+                    label="Example Scenarios",
+                    label_visibility="visible", 
+                    options=PRODUCT_EXAMPLES[product_type].keys(),
+                    key="selected_suggestion",
+                )
+
+        st.markdown("---")
+        st.markdown("**Project Synapse** - Autonomous Last-Mile Delivery Coordination")
+        st.markdown("*Supporting GrabFood | GrabExpress | GrabCar*")
+
+        st.stop()
+
+    # Handle user input
+    user_message = st.chat_input("Ask a follow-up...")
+
+    if not user_message:
+        if user_just_asked_initial_question:
+            user_message = st.session_state.initial_question
+        if user_just_clicked_suggestion:
+            user_message = PRODUCT_EXAMPLES[st.session_state.product_type][st.session_state.selected_suggestion]
+
+    # Display chat messages from history
+    for i, message in enumerate(st.session_state.messages):
+        with st.chat_message(message["role"]):
+            if message["role"] == "assistant":
+                st.container()  # Fix ghost message bug
+
+            st.markdown(message["content"])
+
+            if message["role"] == "assistant":
+                show_feedback_controls(i)
+
+    # Process new user message
+    if user_message:
+        # Display user message
+        with st.chat_message("user"):
+            st.markdown(user_message)
+
+        # Display assistant response
+        with st.chat_message("assistant"):
             # Show selected product context
-            st.markdown(f"**Product Context:** {product_type}")
+            st.markdown(f"**Product Context:** {st.session_state.product_type}")
+            
+            with st.spinner(f"Agent is analyzing the {st.session_state.product_type} scenario and planning actions..."):
+                response = get_ai_response_with_tools(st.session_state.model, user_message, st.session_state.product_type)
 
-            with st.spinner(f"Agent is analyzing the {product_type} scenario and planning actions..."):
-                response = get_ai_response_with_tools(st.session_state.model, user_input, product_type)
+            # Put everything after the spinner in a container to fix ghost message bug
+            with st.container():
+                # Display the response exactly as your original code did
+                st.markdown(response)
 
-            # Display the response
-            st.markdown(response)
+                # Add messages to chat history
+                st.session_state.messages.append({"role": "user", "content": user_message})
+                st.session_state.messages.append({"role": "assistant", "content": response})
 
-        else:
-            st.warning("Please describe a delivery scenario!")
-
-    # Add footer with product info
-    st.markdown("---")
-    st.markdown("**Project Synapse** - Autonomous Last-Mile Delivery Coordination")
-    st.markdown("*Supporting GrabFood | GrabExpress | GrabCar*")
+                # Show feedback controls
+                show_feedback_controls(len(st.session_state.messages) - 1)
 
 if __name__ == "__main__":
     main()
