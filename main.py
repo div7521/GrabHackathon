@@ -208,6 +208,23 @@ PRODUCT_EXAMPLES = {
             "remake the order. What are our options?"
         ),
     },
+    "GrabMart": {
+        ":green[:material/shopping_cart:] Out of Stock Items": (
+            "Customer ordered 5 items from grocery store, but 2 essential items "
+            "are out of stock. Driver is at the store waiting for instructions. "
+            "Customer needs these items urgently for dinner tonight."
+        ),
+        ":purple[:material/inventory:] Wrong Item Picked": (
+            "Driver picked wrong brand of baby formula - customer specifically "
+            "requested Brand A but got Brand B. Customer has allergic baby and "
+            "cannot accept substitution. Store is 15 minutes away."
+        ),
+        ":orange[:material/local_grocery_store:] Store Closure": (
+            "Customer placed large grocery order but store suddenly closed due to "
+            "power outage. Driver arrived to find closed store. Customer has "
+            "guests coming for dinner in 2 hours."
+        ),
+    },
     "GrabExpress": {
         ":violet[:material/local_shipping:] Recipient Unavailable": (
             "Driver arrived at destination but recipient is unavailable for a "
@@ -274,7 +291,7 @@ def main():
     title_row = st.container(horizontal=True, vertical_alignment="bottom")
     
     with title_row:
-        st.title("🧠 Project Synapse", anchor=False, width="stretch")
+        st.title("⚡ Project Synapse", anchor=False, width="stretch")
         st.caption("Agentic Last-Mile Coordinator")
 
         def clear_conversation():
@@ -309,7 +326,7 @@ def main():
         st.markdown("### Select Grab Product")
         product_type = st.selectbox(
             "Choose the Grab service for your scenario:",
-            options=["GrabFood", "GrabExpress", "GrabCar"],
+            options=["GrabFood", "GrabMart", "GrabExpress", "GrabCar"],
             index=0,
             key="product_selector",
             help="Select the specific Grab product to get contextually relevant solutions"
@@ -320,6 +337,7 @@ def main():
         # Product-specific descriptions
         product_descriptions = {
             "GrabFood": "🍽️ Food delivery scenarios: Restaurant delays, damaged packaging, merchant issues, driver routing",
+            "GrabMart": "🛒 Grocery delivery scenarios: Out of stock items, wrong substitutions, store closures, product quality issues",
             "GrabExpress": "📦 Package delivery scenarios: Recipient unavailability, valuable packages, secure drop-offs",
             "GrabCar": "🚗 Ride scenarios: Traffic disruptions, route optimization, passenger urgency, flight connections"
         }
@@ -340,7 +358,7 @@ def main():
 
         st.markdown("---")
         st.markdown("**Project Synapse** - Autonomous Last-Mile Delivery Coordination")
-        st.markdown("*Supporting GrabFood | GrabExpress | GrabCar*")
+        st.markdown("*Supporting GrabFood | GrabMart | GrabExpress | GrabCar*")
 
         st.stop()
 
