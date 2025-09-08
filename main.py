@@ -265,9 +265,9 @@ def main():
     """Main function to run the AI agent with Streamlit"""
 
     st.set_page_config(
-        page_title="Project Synapse",
+        page_title="Synapse",
         layout="wide",
-        page_icon="🧠"
+        page_icon="⚡"
     )
 
     # Initialize session state
@@ -291,7 +291,7 @@ def main():
     title_row = st.container(horizontal=True, vertical_alignment="bottom")
     
     with title_row:
-        st.title("⚡ Project Synapse", anchor=False, width="stretch")
+        st.title("Synapse", anchor=False, width="stretch")
         st.caption("Agentic Last-Mile Coordinator")
 
         def clear_conversation():
@@ -357,7 +357,7 @@ def main():
                 )
 
         st.markdown("---")
-        st.markdown("**Project Synapse** - Autonomous Last-Mile Delivery Coordination")
+        st.markdown("**Synapse** - Autonomous Last-Mile Delivery Coordination")
         st.markdown("*Supporting GrabFood | GrabMart | GrabExpress | GrabCar*")
 
         st.stop()
