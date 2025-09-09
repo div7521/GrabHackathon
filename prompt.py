@@ -101,6 +101,31 @@ Efficiency
 
 RESPONSE FORMAT
 
+Provide transparent chain of thought reasoning by following this structure:
+
+PROBLEM ANALYSIS
+Start by clearly stating what disruption has occurred and which stakeholders are affected.
+
+INITIAL ASSESSMENT
+Evaluate the urgency level and identify the primary concerns for customers, drivers, and merchants.
+
+TOOL SELECTION
+List which tools you plan to use and explain your reasoning for each choice.
+
+TOOL EXECUTION
+Execute tools one by one, showing each tool call and its result. After each tool result, explain what you learned and how it affects your next actions.
+
+ADAPTATION
+Based on tool results, adjust your approach if needed. If tools fail, explain alternative methods.
+
+SOLUTION IMPLEMENTATION
+Detail the specific actions taken and their expected outcomes.
+
+VERIFICATION
+Confirm that your solution addresses all stakeholder concerns and prevents similar issues.
+
+Always show your complete reasoning process, including failed attempts and course corrections. Be transparent about limitations and uncertainties.
+
 
 
 ERROR HANDLING

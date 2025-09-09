@@ -1,12 +1,11 @@
 import os
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.messages import HumanMessage, SystemMessage
-from config import MODEL_NAME
+from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage, AIMessage
+from config import MODEL_NAME, MAX_ITERS
 
 from prompt import system_prompt
 from tools import AVAILABLE_TOOLS
-import json
 import time
 
 AVAILABLE_PRODUCTS = ["GrabFood", "GrabMart", "GrabExpress", "GrabCar"]
@@ -67,100 +66,58 @@ def stream_ai_response(model, user_input, product_type):
             HumanMessage(content=contextualized_input)
         ]
 
-        # Initial response with potential tool calls
-        response = model.invoke(messages)
+        iteration = 0
+        while iteration < MAX_ITERS:
+            iteration += 1
 
-        # Stream the initial response
-        response_text = response.content
+            response = model.invoke(messages)
 
-        # Handle tool calls if present
-        if hasattr(response, 'tool_calls') and response.tool_calls:
-            tool_results = []
-            successful_tools = 0
-            failed_tools = 0
-
-            # First yield the initial response
-            for chunk in response_text.split(' '):
-                yield chunk + ' '
-                time.sleep(0.02)  # Small delay for streaming effect
-
-            yield "\n\n**🔧 Executing Tools:**\n\n"
-
-            for tool_call in response.tool_calls:
-                tool_name = tool_call['name']
-                tool_args = tool_call['args']
-
-                yield f"⏳ Running {tool_name}...\n"
-
-                result = execute_tool_call(tool_name, tool_args)
-
-                # Format result based on success/failure
-                if isinstance(result, dict):
-                    if result.get('success'):
-                        tool_result = f"✅ **{tool_name}({json.dumps(tool_args)}) - SUCCESS**:\n{result['result']}\n\n"
-                        successful_tools += 1
-                    else:
-                        tool_result = f"❌ **{tool_name}({json.dumps(tool_args)}) - FAILED**:\nError: {result['error']}\nSuggestion: {result.get('suggestion', 'Please proceed with alternative approaches.')}\n\n"
-                        failed_tools += 1
-                else:
-                    # Legacy format support
-                    if result.startswith("Error"):
-                        tool_result = f"❌ **{tool_name}({json.dumps(tool_args)}) - FAILED**:\n{result}\n\n"
-                        failed_tools += 1
-                    else:
-                        tool_result = f"✅ **{tool_name}({json.dumps(tool_args)}) - SUCCESS**:\n{result}\n\n"
-                        successful_tools += 1
-
-                # Stream tool result
-                for chunk in tool_result.split(' '):
+            if response.content:
+                for chunk in response.content.split(' '):
                     yield chunk + ' '
-                    time.sleep(0.01)
+                    time.sleep(0.02)
 
-            # If there were failures, provide follow-up analysis
-            if failed_tools > 0:
-                yield f"\n**📋 Analysis Summary:** {successful_tools} tools succeeded, {failed_tools} failed\n\n"
+            if hasattr(response, 'tool_calls') and response.tool_calls:
+                messages.append(AIMessage(content=response.content, tool_calls=response.tool_calls))
 
-                # Create follow-up prompt with tool failure context
-                tool_failure_context = f"""
-Previous tool execution summary:
-- Successful tools: {successful_tools}
-- Failed tools: {failed_tools}
+                tool_results = []
 
-Some tools failed, but please continue with your analysis and provide comprehensive solutions using:
-1. Information from successful tools
-2. Your domain knowledge of {product_type} operations
-3. Alternative approaches that don't rely on failed tools
-4. Manual procedures and recommendations
+                for tool_call in response.tool_calls:
+                    tool_name = tool_call['name']
+                    tool_args = tool_call['args']
+                    tool_call_id = tool_call.get('id', f"{tool_name}_{iteration}")
 
-Please provide a complete solution despite the tool failures.
-"""
+                    yield f"\nExecuting {tool_name}...\n"
 
-                # Get follow-up response
-                follow_up_messages = messages + [
-                    response,
-                    HumanMessage(content=tool_failure_context)
-                ]
+                    result = execute_tool_call(tool_name, tool_args)
 
-                try:
-                    follow_up_response = model.invoke(follow_up_messages)
-                    yield "**🔄 Continued Analysis:**\n\n"
+                    if isinstance(result, dict):
+                        if result.get('success'):
+                            tool_output = result['result']
+                        else:
+                            tool_output = f"Tool failed: {result['error']}"
+                    else:
+                        tool_output = str(result)
 
-                    # Stream follow-up response
-                    for chunk in follow_up_response.content.split(' '):
-                        yield chunk + ' '
-                        time.sleep(0.02)
+                    yield f"{tool_output}\n\n"
 
-                except Exception as e:
-                    yield f"\n\n**Note:** Follow-up analysis failed: {str(e)}"
-        else:
-            # No tool calls, just stream the response
-            for chunk in response_text.split(' '):
-                yield chunk + ' '
-                time.sleep(0.02)
+                    tool_message = ToolMessage(
+                        content=tool_output,
+                        tool_call_id=tool_call_id
+                    )
+                    tool_results.append(tool_message)
+
+                messages.extend(tool_results)
+                continue
+
+            else:
+                break
+
+        if iteration >= MAX_ITERS:
+            yield "\nAnalysis completed with available information.\n"
 
     except Exception as e:
-        error_msg = f"Error in agent processing: {e}"
-        yield f"I encountered a system error, but I can still help you analyze this {product_type} scenario manually. Please let me provide recommendations based on the situation you described:\n\n{user_input}\n\nBased on typical {product_type} operations, here are some general approaches you could consider... [Error: {error_msg}]"
+        yield f"\nError occurred: {str(e)}\n"
 
 PRODUCT_EXAMPLES = {
     "GrabFood": {
