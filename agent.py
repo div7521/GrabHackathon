@@ -59,17 +59,26 @@ def execute_tool_call(tool_name, arguments):
             "suggestion": f"Tool {tool_name} is temporarily unavailable. Please proceed with alternative approaches or manual recommendations."
         }
 
-def stream_ai_response(model, user_input, product_type):
+def convert_conversation_history(conversation_history):
+    messages = []
+    if conversation_history:
+        for msg in conversation_history:
+            if msg["role"] == "user":
+                messages.append(HumanMessage(content=msg["content"]))
+            elif msg["role"] == "assistant":
+                messages.append(AIMessage(content=msg["content"]))
+    return messages
+
+def stream_ai_response(model, user_input, product_type, conversation_history=None):
     try:
         contextualized_input = f"""
         Product: {product_type}
         Scenario: {user_input}
         """
 
-        messages = [
-            SystemMessage(content=system_prompt),
-            HumanMessage(content=contextualized_input)
-        ]
+        messages = [SystemMessage(content=system_prompt)]
+        messages.extend(convert_conversation_history(conversation_history))
+        messages.append(HumanMessage(content=contextualized_input))
 
         iteration = 0
 

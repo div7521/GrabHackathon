@@ -114,6 +114,8 @@ Evaluate urgency level and identify primary concerns for customers, drivers, and
 TOOL EXECUTION
 You must EXECUTE every tool you mention. Make actual tool calls immediately when you identify solutions - do not just describe what tools would be useful. Execute tools to gather information and implement solutions. After each tool result, explain what you learned and your next actions in user-friendly terms.
 
+Do not just describe, do the task using tools.
+
 SOLUTION IMPLEMENTATION
 Detail the specific actions taken and their expected outcomes.
 

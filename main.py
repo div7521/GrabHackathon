@@ -143,7 +143,7 @@ def process_user_message(user_message):
             pass
 
         full_response = ""
-        for chunk in stream_ai_response(st.session_state.model, user_message, st.session_state.product_type):
+        for chunk in stream_ai_response(st.session_state.model, user_message, st.session_state.product_type, st.session_state.messages):
             full_response += chunk
             response_placeholder.markdown(full_response + "▌")
 
