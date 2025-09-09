@@ -72,10 +72,10 @@ def get_interaction_state():
 
 def show_product_interface(product_type):
     product_descriptions = {
-        "GrabFood": "🍽️ **How to use:** Describe food delivery issues like 'Restaurant X has 30min delay, customer Y is urgent, driver Z waiting' - I'll suggest tools like get_merchant_status(), notify_customer(), re_route_driver()",
-        "GrabMart": "🛒 **How to use:** Describe grocery scenarios like 'Customer ordered 5 items, 2 out of stock, driver waiting' - I'll suggest tools like get_nearby_merchants(), contact_recipient_via_chat()",
-        "GrabExpress": "📦 **How to use:** Describe package issues like 'High-value item, recipient unavailable, need secure option' - I'll suggest tools like suggest_safe_drop_off(), find_nearby_locker()",
-        "GrabCar": "🚗 **How to use:** Describe ride problems like 'Traffic jam, passenger has flight, need alternative route' - I'll suggest tools like check_traffic(), calculate_alternative_route()"
+        "GrabFood": "🍽️ **How to use:** Describe food delivery issues like 'Restaurant X has 30min delay, customer Y is urgent, driver Z waiting' - I'll analyze and resolve the situation",
+        "GrabMart": "🛒 **How to use:** Describe grocery scenarios like 'Customer ordered 5 items, 2 out of stock, driver waiting' - I'll find the best solution",
+        "GrabExpress": "📦 **How to use:** Describe package issues like 'High-value item, recipient unavailable, need secure option' - I'll handle delivery coordination",
+        "GrabCar": "🚗 **How to use:** Describe ride problems like 'Traffic jam, passenger has flight, need alternative route' - I'll optimize the journey"
     }
 
     st.info(product_descriptions[product_type])
