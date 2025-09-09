@@ -36,22 +36,22 @@ from .flight_tools import (
     check_flight_status
 )
 
-AVAILABLE_TOOLS = [
-    get_merchant_status,
-    get_nearby_merchants,
-    notify_customer,
-    check_traffic,
-    calculate_alternative_route,
-    notify_passenger_and_driver,
-    contact_recipient_via_chat,
-    issue_instant_refund,
-    re_route_driver,
-    exonerate_driver,
-    initiate_mediation_flow,
-    collect_evidence,
-    analyze_evidence,
-    suggest_safe_drop_off,
-    find_nearby_locker,
-    log_merchant_packaging_feedback,
-    check_flight_status,
-]
+AVAILABLE_TOOLS = {
+    "get_merchant_status": get_merchant_status,
+    "get_nearby_merchants": get_nearby_merchants,
+    "notify_customer": notify_customer,
+    "check_traffic": check_traffic,
+    "calculate_alternative_route": calculate_alternative_route,
+    "notify_passenger_and_driver": notify_passenger_and_driver,
+    "contact_recipient_via_chat": contact_recipient_via_chat,
+    "issue_instant_refund": issue_instant_refund,
+    "re_route_driver": re_route_driver,
+    "exonerate_driver": exonerate_driver,
+    "initiate_mediation_flow": initiate_mediation_flow,
+    "collect_evidence": collect_evidence,
+    "analyze_evidence": analyze_evidence,
+    "suggest_safe_drop_off": suggest_safe_drop_off,
+    "find_nearby_locker": find_nearby_locker,
+    "log_merchant_packaging_feedback": log_merchant_packaging_feedback,
+    "check_flight_status": check_flight_status,
+}

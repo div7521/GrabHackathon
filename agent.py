@@ -2,45 +2,33 @@ import os
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage, SystemMessage
-from logging_config import tool_logger
+from config import MODEL_NAME
 
 from prompt import system_prompt
-from tools import AVAILABLE_TOOLS, get_langchain_tools
+from tools import AVAILABLE_TOOLS
 import json
 import time
 
-load_dotenv()
-
 AVAILABLE_PRODUCTS = ["GrabFood", "GrabMart", "GrabExpress", "GrabCar"]
 
-def setup_gemini():
-    """Initialize Gemini model with tools"""
+def setup_model(model_name=MODEL_NAME):
     load_dotenv()
-    api_key = os.environ.get("GEMINI_API_KEY")
-
+    api_key = os.environ.get("API_KEY")
     if not api_key:
-        raise ValueError("GEMINI_API_KEY not found in environment variables")
+        raise ValueError("API_KEY not found in environment variables")
 
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",
+        model=model_name,
         google_api_key=api_key,
         temperature=0.1
     )
 
-    # Bind tools to the model
-    tools = get_langchain_tools()
-    llm_with_tools = llm.bind_tools(tools)
-
+    llm_with_tools = llm.bind_tools(list(AVAILABLE_TOOLS.values()))
     return llm_with_tools
 
 def execute_tool_call(tool_name, arguments):
-    """Execute a tool call with given arguments and return structured results"""
-    # Log tool call
-    tool_logger.info(f"Calling tool: {tool_name}")
-
     if tool_name not in AVAILABLE_TOOLS:
         error_msg = f"Tool '{tool_name}' not found in available tools. Available tools: {list(AVAILABLE_TOOLS.keys())}"
-        tool_logger.error(f"Tool not found: {tool_name}")
         return {
             "success": False,
             "error": error_msg,
@@ -51,15 +39,14 @@ def execute_tool_call(tool_name, arguments):
     try:
         tool_function = AVAILABLE_TOOLS[tool_name]
         result = tool_function(**arguments)
-        tool_logger.info(f"Tool {tool_name} executed successfully")
         return {
             "success": True,
             "result": result,
             "tool_name": tool_name
         }
+
     except Exception as e:
         error_msg = f"Tool execution failed: {str(e)}"
-        tool_logger.error(f"Tool {tool_name} failed: {str(e)}")
         return {
             "success": False,
             "error": error_msg,
@@ -69,18 +56,11 @@ def execute_tool_call(tool_name, arguments):
         }
 
 def stream_ai_response(model, user_input, product_type):
-    """Stream response from Gemini with error-resilient tool calling support"""
     try:
-        # Create context-aware prompt based on product type
         contextualized_input = f"""
-Product Context: {product_type}
-
-User Scenario: {user_input}
-
-Please analyze this scenario specifically in the context of {product_type} operations and provide appropriate solutions using the available tools.
-
-IMPORTANT: If any tools fail or return errors, continue your analysis and provide alternative solutions. Tool failures should not prevent you from delivering comprehensive recommendations.
-"""
+        Product: {product_type}
+        Scenario: {user_input}
+        """
 
         messages = [
             SystemMessage(content=system_prompt),
@@ -180,10 +160,8 @@ Please provide a complete solution despite the tool failures.
 
     except Exception as e:
         error_msg = f"Error in agent processing: {e}"
-        tool_logger.error(error_msg)
         yield f"I encountered a system error, but I can still help you analyze this {product_type} scenario manually. Please let me provide recommendations based on the situation you described:\n\n{user_input}\n\nBased on typical {product_type} operations, here are some general approaches you could consider... [Error: {error_msg}]"
 
-# Product-specific examples for quick start with improved instruction format
 PRODUCT_EXAMPLES = {
     "GrabFood": {
         ":orange[:material/restaurant:] Restaurant Overload": (

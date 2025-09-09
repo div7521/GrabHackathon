@@ -101,17 +101,7 @@ Efficiency
 
 RESPONSE FORMAT
 
-Structure every response as:
 
-SITUATION: Brief description of the problem and urgency level
-
-ANALYSIS: Root cause identification and stakeholder impact assessment
-
-ACTIONS: Specific tools to use with clear reasoning for each choice
-
-USAGE: Print the chain of thought and tools called.
-
-EXPECTED OUTCOME: Predicted results and success metrics
 
 ERROR HANDLING
 

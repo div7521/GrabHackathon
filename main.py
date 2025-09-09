@@ -1,5 +1,5 @@
 import streamlit as st
-from agent import setup_gemini, stream_ai_response, PRODUCT_EXAMPLES, AVAILABLE_PRODUCTS
+from agent import setup_model, stream_ai_response, PRODUCT_EXAMPLES, AVAILABLE_PRODUCTS
 
 def show_feedback_controls(message_index):
     """Shows the "How did I do?" control."""
@@ -42,7 +42,7 @@ def main():
     if 'model' not in st.session_state:
         with st.spinner("Initializing Synapse..."):
             try:
-                st.session_state.model = setup_gemini()
+                st.session_state.model = setup_model()
                 st.success("Synapse initialized successfully!")
             except Exception as e:
                 st.error(f"Setup failed. Reason: {e}")

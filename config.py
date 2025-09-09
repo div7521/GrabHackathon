@@ -1,3 +1,5 @@
+MODEL_NAME="gemini-1.5-flash"
+
 # Configuration settings for Project Synapse
 MAX_CHARS = 10000
 
