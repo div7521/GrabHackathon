@@ -141,46 +141,46 @@ def stream_ai_response(model, user_input, product_type, conversation_history=Non
 
 PRODUCT_EXAMPLES = {
     "GrabFood": {
-        "Multi-Restaurant Crisis": (
+        ":orange[:material/restaurant:] Multi-Restaurant Crisis": (
             "Restaurant MERCHANT_789 has 45-minute delay due to equipment failure. Customer CUST_456 ordered for elderly parent's birthday dinner at 7 PM, it's now 6:15 PM. Driver DRIVER_123 has been waiting 20 minutes and has 3 other pending orders. Customer calls saying parent has diabetes and needs to eat on schedule. Kitchen staff claims food was properly prepared before equipment broke."
         ),
-        "Delivery Dispute Investigation": (
+        ":red[:material/delivery_dining:] Delivery Dispute Investigation": (
             "Food arrived 35 minutes late and cold. Customer CUST_890 demands full refund claiming driver DRIVER_567 was rude and food was incorrectly packaged. Driver claims restaurant MERCHANT_234 gave him wrong order initially, causing return trip and delay. Restaurant manager says packaging was fine and driver seemed inexperienced. Customer threatens negative reviews."
         ),
-        "Weather Emergency Coordination": (
+        ":blue[:material/cloud:] Weather Emergency Coordination": (
             "Severe thunderstorm hit delivery zone. Customer CUST_678 ordered hot soup for sick child, storm started after driver DRIVER_890 picked up order. Driver is stuck in traffic due to flooding on main route ROUTE_456. Restaurant MERCHANT_123 can't prepare replacement order due to power outage. Customer desperately needs food for medication timing. Multiple alternative routes flooded."
         ),
     },
     "GrabMart": {
-        "Supply Chain Disruption": (
+        ":green[:material/shopping_cart:] Supply Chain Disruption": (
             "Customer CUST_345 ordered 8 items including baby formula, fever medicine, and dinner ingredients from store MERCHANT_567. Store reports 4 items out of stock including critical baby formula for 6-month-old with allergies. Driver DRIVER_234 waiting at store. Customer's partner is at work, can't substitute formula brands due to allergies. Three nearby stores might have alternatives but need inventory verification."
         ),
-        "Quality Control Crisis": (
+        ":purple[:material/inventory:] Quality Control Crisis": (
             "Customer CUST_123 received grocery order but meat products appear spoiled and vegetables are wilted. Claims packaging was warm and items seem old. Driver DRIVER_789 delivered as instructed but noticed unusual smell. Store MERCHANT_890 insists items were fresh and properly refrigerated. Customer wants immediate refund and replacement but lives 45 minutes away. Pregnant customer concerned about food safety."
         ),
-        "Bulk Order Complications": (
+        ":orange[:material/local_grocery_store:] Bulk Order Complications": (
             "Large family gathering order worth $200 for 15 people. Store MERCHANT_456 closed unexpectedly due to staff shortage. Customer CUST_567 guests arriving in 3 hours for celebration. Driver DRIVER_345 already en route when store closure discovered."
         ),
     },
     "GrabExpress": {
-        "High-Value Authentication Crisis": (
+        ":violet[:material/local_shipping:] High-Value Authentication Crisis": (
             "Package PKG_456 contains $1500 signed contract documents for urgent business deal. Recipient RECIPIENT_789 unavailable due to emergency hospital visit. Building security won't accept package. Contract deadline is tomorrow morning. Sender SENDER_234 demands proof of delivery. Package requires signature verification. Driver DRIVER_567 has been waiting 30 minutes."
         ),
-        "Cross-City Delivery Challenge": (
+        ":orange[:material/warning:] Cross-City Delivery Challenge": (
             "Electronics package PKG_890 worth $800 damaged during transport. Customer CUSTOMER_123 refuses delivery claiming driver DRIVER_456 was careless. Driver has photo evidence of pre-existing damage from pickup location. Sender SENDER_567 claims item was perfect condition. Insurance claim needed but requires detailed evidence collection. Customer needs replacement urgently for work presentation tomorrow."
         ),
-        "Time-Critical Medical Delivery": (
+        ":green[:material/security:] Time-Critical Medical Delivery": (
             "Medical documents PKG_234 for surgery consultation needed by 4 PM today, currently 2:30 PM. Recipient RECIPIENT_345 at hospital but can't leave patient's bedside. Package contains confidential medical records requiring secure handling. Hospital has strict delivery protocols. Driver DRIVER_123 unfamiliar with hospital procedures. Alternative contact CONTACT_678 available but needs authorization."
         ),
     },
     "GrabCar": {
-        "Airport Emergency Coordination": (
+        ":red[:material/flight:] Airport Emergency Coordination": (
             "Passenger PASS_456 needs to catch international flight SQ825 departing at 8:30 PM, currently 6:45 PM. Main route ROUTE_789 blocked due to accident, alternative routes experiencing 40+ minute delays. Flight is overbooked so missing it means 24-hour delay. Passenger has connecting flight in destination city. Driver DRIVER_234 suggests expensive toll road but passenger budget-conscious."
         ),
-        "Multi-Stop Business Crisis": (
+        ":blue[:material/traffic:] Multi-Stop Business Crisis": (
             "Executive PASS_678 has critical presentations at 3 different locations today. Current trip to location 2 delayed by 25 minutes due to earlier traffic. Locations 3 has strict security requiring 15-minute early arrival. Original schedule now impossible. Passenger willing to pay premium for solution. Driver DRIVER_567 suggests splitting journey between multiple drivers."
         ),
-        "Vehicle Safety Investigation": (
+        ":yellow[:material/directions_car:] Vehicle Safety Investigation": (
             "Mid-journey vehicle breakdown on highway. Passenger PASS_890 claims driver DRIVER_345 was driving unsafely before breakdown. Driver claims passenger was distracting him. Both have different versions of events. Passenger late for job interview, stressed and agitated. Driver's vehicle needs towing. Replacement vehicle 20 minutes away. Insurance requires incident documentation."
         ),
     },
