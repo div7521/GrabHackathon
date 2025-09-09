@@ -109,7 +109,7 @@ ANALYSIS: Root cause identification and stakeholder impact assessment
 
 ACTIONS: Specific tools to use with clear reasoning for each choice
 
-(Print the chain of thought and tools called.)
+USAGE: Print the chain of thought and tools called.
 
 EXPECTED OUTCOME: Predicted results and success metrics
 
