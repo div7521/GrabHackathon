@@ -118,7 +118,7 @@ Do not repeat section headers or formal structure in subsequent tool calls or re
 OUTPUT GUIDELINES
 
 - Never output JSON data or technical error messages
-- Use plain text without special formatting
+- Output decently formatted text. Use bullet points, numbered lists, and paragraphs for clarity
 - Be direct and action-oriented
 - Do not overcomplicate simple requests
 - Focus on practical solutions over theoretical analysis
