@@ -103,7 +103,7 @@ def stream_ai_response(model, user_input, product_type, conversation_history=Non
                     tool_args = tool_call['args']
                     tool_call_id = tool_call.get('id', f"{tool_name}_{iteration}")
 
-                    yield f"Executing {tool_name}...\n"
+                    yield f"\n\nExecuting {tool_name}...\n"
 
                     result = execute_tool_call(tool_name, tool_args)
 
@@ -115,7 +115,7 @@ def stream_ai_response(model, user_input, product_type, conversation_history=Non
                     else:
                         tool_output = str(result)
 
-                    yield f"{tool_output}\n\n"
+                    # yield f"{tool_output}\n\n"
 
                     tool_message = ToolMessage(
                         content=tool_output,
