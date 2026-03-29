@@ -55,7 +55,7 @@ Last-mile delivery operations face a **15-20% failure rate** due to unpredictabl
 - Lack of multi-factor reasoning
 - Require human approval for execution
 
-**For detailed problem analysis, refer to our [Problem Statement Slides]([./docs/slides_problem.pdf](https://drive.google.com/file/d/1oF2xHkE9cyOj9l4Yxx2seBkA9jLroov3/view?usp=drive_link))**
+**For detailed problem analysis, refer to our [Problem Statement Slides]([https://drive.google.com/file/d/1oF2xHkE9cyOj9l4Yxx2seBkA9jLroov3/view?usp=drive_link])**
 
 ---
 
