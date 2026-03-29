@@ -31,6 +31,8 @@ Project Synapse is an autonomous AI agent designed to resolve complex last-mile 
 Last-mile delivery operations face a **15-20% failure rate** due to unpredictable disruptions that rigid, rule-based systems cannot effectively handle.
 
 ![Problem Analysis](./docs/images/problem_statement.png)
+<img width="1158" height="652" alt="Screenshot 2026-03-29 at 3 20 26 PM" src="https://github.com/user-attachments/assets/8ec3582d-453a-460b-83bb-a2d3ed32a2b1" />
+
 
 ### Key Challenges
 
@@ -85,6 +87,8 @@ Project Synapse is an autonomous AI agent that reasons through delivery disrupti
 ## Key Features
 
 ![Feature Overview](./docs/images/features.png)
+<img width="1215" height="685" alt="Screenshot 2026-03-29 at 3 20 52 PM" src="https://github.com/user-attachments/assets/b663b31a-384a-40c3-9449-9aeaf55c8a48" />
+
 
 ### Intelligent Reasoning Engine
 - Chain-of-thought processing with transparent decision-making
