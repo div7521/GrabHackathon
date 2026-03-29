@@ -55,7 +55,7 @@ Last-mile delivery operations face a **15-20% failure rate** due to unpredictabl
 - Lack of multi-factor reasoning
 - Require human approval for execution
 
-**For detailed problem analysis, refer to our [Problem Statement Slides](./docs/slides_problem.pdf)**
+**For detailed problem analysis, refer to our [Problem Statement Slides]([./docs/slides_problem.pdf](https://drive.google.com/file/d/1oF2xHkE9cyOj9l4Yxx2seBkA9jLroov3/view?usp=drive_link))**
 
 ---
 
@@ -128,7 +128,7 @@ Project Synapse is an autonomous AI agent that reasons through delivery disrupti
 - Follow-up question capability
 - One-click conversation restart
 
-**For comprehensive feature details, refer to our [Solution Architecture Slides](./docs/slides_solution.pdf)**
+**For comprehensive feature details, refer to our [Solution Architecture Slides]([./docs/slides_solution.pdf](https://drive.google.com/file/d/1Ra7RXllKTUg8MOUfsFS8NYcltXOXkZbz/view?usp=drive_link))**
 
 ---
 
@@ -290,14 +290,12 @@ GrabHackathon/
 - Comprehensive analysis of last-mile delivery challenges
 - Current AI maturity landscape
 - Identified gaps and limitations
-- [View Problem Statement Slides](./docs/slides_problem.pdf)
 
 **Solution Architecture & Implementation**
 - Framework architecture and design patterns
 - Engineering techniques and prompt strategies
 - Feature implementation details
 - System architecture diagrams
-- [View Solution Architecture Slides](./docs/slides_solution.pdf)
 
 ### Repository
 - **GitHub**: [https://github.com/div7521/GrabHackathon](https://github.com/div7521/GrabHackathon)
